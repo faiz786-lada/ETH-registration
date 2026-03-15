@@ -604,6 +604,16 @@
             background: #c82333;
         }
 
+        .btn-edit {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .btn-download {
+            background: #17a2b8;
+            color: white;
+        }
+
         /* Modal Styles */
         .modal {
             display: none;
@@ -860,6 +870,44 @@
             to { transform: rotate(360deg); }
         }
 
+        /* PDF Download Button */
+        .pdf-download-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            margin-top: 20px;
+        }
+
+        .pdf-download-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Edit Form Styles */
+        .edit-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .edit-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
         /* Mobile Specific Styles */
         @media (max-width: 768px) {
             body {
@@ -989,6 +1037,9 @@
             }
         }
     </style>
+    <!-- Add jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="app-container">
@@ -1123,6 +1174,9 @@
                             <h3 class="settings-title">📋 Application Details</h3>
                             <div id="applicationDetails"></div>
                             <div id="statusTracker" class="status-tracker"></div>
+                            <button onclick="downloadResultPDF()" class="pdf-download-btn" id="downloadPDFBtn">
+                                <span>📥</span> Download Result PDF
+                            </button>
                         </div>
                     </div>
 
@@ -1252,11 +1306,92 @@
             </div>
             <div class="modal-body" id="modalContent"></div>
             <div class="modal-footer">
+                <button class="btn btn-edit" onclick="enableEditMode()" style="width: auto; background: #ffc107; color: #000;">
+                    <span>✏️</span> Edit
+                </button>
                 <button class="btn btn-danger" onclick="deleteFromModal()" style="width: auto;">
                     <span>🗑️</span> Delete Application
                 </button>
                 <button class="btn btn-secondary" onclick="closeModal()" style="width: auto; background: #6c757d; color: white;">
                     Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Student Modal -->
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Student Details</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editStudentForm">
+                    <div class="form-group">
+                        <label>Student Name</label>
+                        <input type="text" id="editStudentName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Father's Name</label>
+                        <input type="text" id="editFatherName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mother's Name</label>
+                        <input type="text" id="editMotherName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Current Class</label>
+                        <select id="editCurrentClass" class="form-control" required>
+                            <option value="6">Class 6</option>
+                            <option value="7">Class 7</option>
+                            <option value="8">Class 8</option>
+                            <option value="9">Class 9</option>
+                            <option value="10">Class 10</option>
+                            <option value="11">Class 11</option>
+                            <option value="12">Class 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Admission Class</label>
+                        <select id="editAdmissionClass" class="form-control" required>
+                            <option value="6">Class 6</option>
+                            <option value="7">Class 7</option>
+                            <option value="8">Class 8</option>
+                            <option value="9">Class 9</option>
+                            <option value="10">Class 10</option>
+                            <option value="11">Class 11</option>
+                            <option value="12">Class 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="editPhone" class="form-control" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="editEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Percentage</label>
+                        <input type="number" id="editPercentage" class="form-control" min="0" max="100" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="editStatus" class="form-control" required>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="saveStudentEdits()" style="width: auto;">
+                    <span>💾</span> Save Changes
+                </button>
+                <button class="btn btn-secondary" onclick="closeEditModal()" style="width: auto; background: #6c757d; color: white;">
+                    Cancel
                 </button>
             </div>
         </div>
@@ -1310,6 +1445,9 @@
         let countdownInterval;
         let studentToDelete = null;
         let deleteAllMode = false;
+        let currentTrackingStudent = null;
+        let currentTrackingId = null;
+        let currentEditStudentId = null;
         const ADMIN_EMAIL = "ethwemaketoppers@gmail.com";
         const ADMIN_PASSWORD = "vidhan kumar";
 
@@ -1458,6 +1596,117 @@
             }, 1000);
         }
 
+        // Generate PDF
+        async function generatePDF(student, studentId, type = 'registration') {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add logo/header
+            doc.setFillColor(102, 126, 234);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.setFont("helvetica", "bold");
+            doc.text("Education Toppers Hub", 105, 20, { align: "center" });
+            
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("Smart Admission System", 105, 30, { align: "center" });
+            
+            // Reset text color
+            doc.setTextColor(0, 0, 0);
+            
+            // Title
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.text(type === 'registration' ? "Registration Confirmation" : "Application Result", 105, 55, { align: "center" });
+            
+            // Application ID
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Application ID: ${studentId}`, 20, 70);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, 70);
+            
+            // Line
+            doc.setDrawColor(200, 200, 200);
+            doc.line(20, 75, 190, 75);
+            
+            // Student Details
+            let yPos = 85;
+            const lineHeight = 8;
+            
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "bold");
+            doc.text("Student Details", 20, yPos);
+            yPos += lineHeight + 2;
+            
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            
+            const details = [
+                ["Student Name:", student.studentName || 'N/A'],
+                ["Father's Name:", student.fatherName || 'N/A'],
+                ["Mother's Name:", student.motherName || 'N/A'],
+                ["Current Class:", `Class ${student.currentClass || 'N/A'}`],
+                ["Admission Class:", `Class ${student.admissionClass || 'N/A'}`],
+                ["Phone:", student.phone || 'N/A'],
+                ["Email:", student.email || 'N/A'],
+                ["Last Percentage:", `${student.lastPercentage || 'N/A'}%`],
+                ["Status:", student.status || 'pending']
+            ];
+            
+            details.forEach(([label, value]) => {
+                doc.setFont("helvetica", "bold");
+                doc.text(label, 20, yPos);
+                doc.setFont("helvetica", "normal");
+                doc.text(value, 80, yPos);
+                yPos += lineHeight;
+            });
+            
+            // Status History
+            if (student.statusHistory && student.statusHistory.length > 0) {
+                yPos += 5;
+                doc.setFontSize(12);
+                doc.setFont("helvetica", "bold");
+                doc.text("Application Timeline", 20, yPos);
+                yPos += lineHeight + 2;
+                
+                doc.setFontSize(9);
+                doc.setFont("helvetica", "normal");
+                
+                student.statusHistory.forEach((entry) => {
+                    const date = new Date(entry.timestamp).toLocaleString();
+                    doc.text(`${entry.status}: ${entry.note || ''} - ${date}`, 25, yPos);
+                    yPos += lineHeight - 2;
+                });
+            }
+            
+            // Footer
+            yPos = 270;
+            doc.setDrawColor(200, 200, 200);
+            doc.line(20, yPos, 190, yPos);
+            
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text("This is a computer generated document. No signature required.", 105, yPos + 5, { align: "center" });
+            doc.text("Education Toppers Hub - All rights reserved", 105, yPos + 10, { align: "center" });
+            
+            return doc;
+        }
+
+        // Download PDF
+        async function downloadPDF(student, studentId, type = 'registration') {
+            try {
+                const doc = await generatePDF(student, studentId, type);
+                doc.save(`${type}_${studentId}.pdf`);
+                return true;
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+                return false;
+            }
+        }
+
         // Registration Form Submit
         document.getElementById('registrationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1496,7 +1745,16 @@
 
             try {
                 const docRef = await addDoc(collection(db, "students"), formData);
-                showMessage('✅ Registration successful! Your application ID: ' + docRef.id, 'success', 'statusMessage');
+                
+                // Generate and download PDF
+                const pdfGenerated = await downloadPDF(formData, docRef.id, 'registration');
+                
+                if (pdfGenerated) {
+                    showMessage('✅ Registration successful! Your application ID: ' + docRef.id + ' - PDF has been downloaded.', 'success', 'statusMessage');
+                } else {
+                    showMessage('✅ Registration successful! Your application ID: ' + docRef.id + ' (PDF download failed, but registration is complete)', 'success', 'statusMessage');
+                }
+                
                 document.getElementById('registrationForm').reset();
             } catch (error) {
                 console.error("Error adding document: ", error);
@@ -1532,6 +1790,8 @@
                 }
                 
                 if (student) {
+                    currentTrackingStudent = student;
+                    currentTrackingId = studentId;
                     displayApplicationStatus(student, studentId);
                 } else {
                     showTrackMessage('No application found with this email or phone', 'error');
@@ -1541,6 +1801,16 @@
                 showTrackMessage('Error tracking application', 'error');
             }
         });
+
+        // Download Result PDF
+        window.downloadResultPDF = function() {
+            if (currentTrackingStudent && currentTrackingId) {
+                downloadPDF(currentTrackingStudent, currentTrackingId, 'result');
+                showTrackMessage('PDF downloaded successfully!', 'success');
+            } else {
+                showTrackMessage('No application data to download!', 'error');
+            }
+        }
 
         // Display Application Status
         function displayApplicationStatus(student, studentId) {
@@ -1784,8 +2054,10 @@
                         <td>
                             <div class="action-group">
                                 <button class="action-btn btn-view" onclick="viewStudentDetails('${student.id}')">👁️ View</button>
+                                <button class="action-btn btn-edit" onclick="editStudent('${student.id}')">✏️ Edit</button>
                                 ${student.status !== 'approved' ? `<button class="action-btn btn-approve" onclick="updateStatus('${student.id}', 'approved')">✅ Approve</button>` : ''}
                                 ${student.status !== 'rejected' ? `<button class="action-btn btn-reject" onclick="updateStatus('${student.id}', 'rejected')">❌ Reject</button>` : ''}
+                                <button class="action-btn btn-download" onclick="downloadStudentPDF('${student.id}')">📥 PDF</button>
                                 <button class="action-btn btn-delete" onclick="confirmDelete('${student.id}')">🗑️ Delete</button>
                             </div>
                         </td>
@@ -1794,6 +2066,103 @@
             });
 
             studentsList.innerHTML = html;
+        }
+
+        // Download Student PDF from Admin Panel
+        window.downloadStudentPDF = async function(studentId) {
+            try {
+                const student = allStudents.find(s => s.id === studentId);
+                if (student) {
+                    await downloadPDF(student, studentId, 'result');
+                    showAdminMessage('PDF downloaded successfully!', 'success');
+                }
+            } catch (error) {
+                console.error("Error downloading PDF:", error);
+                showAdminMessage('Error downloading PDF!', 'error');
+            }
+        }
+
+        // Edit Student
+        window.editStudent = function(studentId) {
+            const student = allStudents.find(s => s.id === studentId);
+            if (student) {
+                currentEditStudentId = studentId;
+                
+                document.getElementById('editStudentName').value = student.studentName || '';
+                document.getElementById('editFatherName').value = student.fatherName || '';
+                document.getElementById('editMotherName').value = student.motherName || '';
+                document.getElementById('editCurrentClass').value = student.currentClass || '6';
+                document.getElementById('editAdmissionClass').value = student.admissionClass || '6';
+                document.getElementById('editPhone').value = student.phone || '';
+                document.getElementById('editEmail').value = student.email || '';
+                document.getElementById('editPercentage').value = student.lastPercentage || '';
+                document.getElementById('editStatus').value = student.status || 'pending';
+                
+                document.getElementById('editStudentModal').style.display = 'flex';
+            }
+        }
+
+        // Save Student Edits
+        window.saveStudentEdits = async function() {
+            if (!currentEditStudentId) return;
+            
+            const updatedData = {
+                studentName: document.getElementById('editStudentName').value,
+                fatherName: document.getElementById('editFatherName').value,
+                motherName: document.getElementById('editMotherName').value,
+                currentClass: document.getElementById('editCurrentClass').value,
+                admissionClass: document.getElementById('editAdmissionClass').value,
+                phone: document.getElementById('editPhone').value,
+                email: document.getElementById('editEmail').value,
+                lastPercentage: parseFloat(document.getElementById('editPercentage').value),
+                status: document.getElementById('editStatus').value,
+                updatedAt: new Date().getTime()
+            };
+            
+            // Validate phone
+            if (!/^\d{10}$/.test(updatedData.phone)) {
+                alert('Please enter a valid 10-digit phone number');
+                return;
+            }
+            
+            try {
+                const studentRef = doc(db, "students", currentEditStudentId);
+                const studentDoc = await getDoc(studentRef);
+                const currentData = studentDoc.data();
+                
+                // Add to status history if status changed
+                if (currentData.status !== updatedData.status) {
+                    const statusHistory = currentData.statusHistory || [];
+                    statusHistory.push({
+                        status: updatedData.status,
+                        timestamp: new Date().getTime(),
+                        note: `Status changed from ${currentData.status} to ${updatedData.status} by admin`
+                    });
+                    updatedData.statusHistory = statusHistory;
+                }
+                
+                await updateDoc(studentRef, updatedData);
+                
+                closeEditModal();
+                showAdminMessage('Student details updated successfully!', 'success');
+            } catch (error) {
+                console.error("Error updating student:", error);
+                showAdminMessage('Error updating student details!', 'error');
+            }
+        }
+
+        // Close Edit Modal
+        window.closeEditModal = function() {
+            document.getElementById('editStudentModal').style.display = 'none';
+            currentEditStudentId = null;
+        }
+
+        // Enable Edit Mode in View Modal
+        window.enableEditMode = function() {
+            const modal = document.getElementById('studentModal');
+            const studentId = modal.getAttribute('data-student-id');
+            closeModal();
+            editStudent(studentId);
         }
 
         // Update Statistics
@@ -2056,6 +2425,8 @@
         window.onclick = function(event) {
             const modal = document.getElementById('studentModal');
             const deleteModal = document.getElementById('deleteConfirmModal');
+            const editModal = document.getElementById('editStudentModal');
+            
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
@@ -2063,6 +2434,10 @@
                 deleteModal.style.display = 'none';
                 studentToDelete = null;
                 deleteAllMode = false;
+            }
+            if (event.target === editModal) {
+                editModal.style.display = 'none';
+                currentEditStudentId = null;
             }
         }
 

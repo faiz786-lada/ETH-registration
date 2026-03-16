@@ -26,7 +26,7 @@
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
-            --transition: all 0.3s ease;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Modern Reset */
@@ -44,6 +44,12 @@
             justify-content: center;
             align-items: center;
             padding: 16px;
+            opacity: 0;
+            animation: fadeInBody 0.5s ease forwards;
+        }
+
+        @keyframes fadeInBody {
+            to { opacity: 1; }
         }
 
         /* Main Container */
@@ -51,6 +57,12 @@
             width: 100%;
             max-width: 1440px;
             margin: 0 auto;
+            transform: translateY(20px);
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); }
         }
 
         .glass-card {
@@ -60,6 +72,11 @@
             box-shadow: var(--shadow-xl);
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         /* Header Section */
@@ -94,6 +111,7 @@
             margin-bottom: 10px;
             position: relative;
             letter-spacing: -0.5px;
+            animation: fadeInDown 0.8s ease;
         }
 
         .header p {
@@ -101,6 +119,29 @@
             opacity: 0.95;
             position: relative;
             font-weight: 400;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Live Counter */
@@ -112,6 +153,12 @@
             margin-top: 15px;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .live-counter span {
@@ -147,6 +194,26 @@
             justify-content: center;
             gap: 8px;
             box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .tab-btn:active::after {
+            width: 100px;
+            height: 100px;
         }
 
         .tab-btn i {
@@ -169,11 +236,12 @@
         .content-area {
             padding: 24px;
             background: var(--light-bg);
+            min-height: 500px;
         }
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tab-content.active {
@@ -181,8 +249,44 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        /* Lazy Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: var(--radius-sm);
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-text {
+            height: 20px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .skeleton-title {
+            height: 30px;
+            width: 60%;
+            margin-bottom: 20px;
+        }
+
+        .skeleton-card {
+            height: 150px;
+            margin-bottom: 20px;
         }
 
         /* Registration Info Card */
@@ -193,6 +297,13 @@
             padding: 24px;
             margin-bottom: 24px;
             box-shadow: var(--shadow-md);
+            transform: translateY(0);
+            transition: var(--transition);
+        }
+
+        .registration-info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .info-title {
@@ -220,6 +331,12 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            transition: var(--transition);
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .info-label {
@@ -265,6 +382,7 @@
             font-weight: 700;
             margin-top: 20px;
             box-shadow: var(--shadow-lg);
+            animation: pulse 2s infinite;
         }
 
         /* Form Styles */
@@ -284,6 +402,7 @@
 
         .form-group {
             margin-bottom: 0;
+            position: relative;
         }
 
         .form-group label {
@@ -292,6 +411,7 @@
             font-weight: 600;
             color: var(--text-primary);
             font-size: 0.95rem;
+            transition: var(--transition);
         }
 
         .form-group label span {
@@ -313,10 +433,18 @@
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+            transform: translateY(-1px);
         }
 
         .form-control.error {
             border-color: var(--danger-color);
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         select.form-control {
@@ -341,6 +469,26 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .btn:active::after {
+            width: 100px;
+            height: 100px;
         }
 
         .btn-primary {
@@ -402,6 +550,18 @@
             border: 1px solid var(--border-color);
             position: relative;
             overflow: hidden;
+            animation: fadeInScale 0.5s ease;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .stat-card::before {
@@ -415,7 +575,7 @@
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.02);
             box-shadow: var(--shadow-lg);
         }
 
@@ -512,8 +672,14 @@
             color: var(--text-primary);
         }
 
+        .modern-table tr {
+            transition: var(--transition);
+        }
+
         .modern-table tr:hover {
             background: var(--light-bg);
+            transform: scale(1.01);
+            box-shadow: var(--shadow-sm);
         }
 
         /* Filter Section */
@@ -530,6 +696,13 @@
             border-radius: var(--radius-md);
             font-size: 0.95rem;
             width: 100%;
+            transition: var(--transition);
+        }
+
+        .filter-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
         }
 
         /* Status Badges */
@@ -578,6 +751,11 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-view {
@@ -638,16 +816,16 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow-xl);
-            animation: slideUp 0.3s ease;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes slideUp {
             from {
-                transform: translateY(50px);
+                transform: translateY(50px) scale(0.9);
                 opacity: 0;
             }
             to {
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
                 opacity: 1;
             }
         }
@@ -686,6 +864,7 @@
 
         .close-btn:hover {
             background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
         }
 
         .modal-body {
@@ -736,6 +915,18 @@
             gap: 16px;
             margin-bottom: 16px;
             position: relative;
+            animation: fadeInLeft 0.3s ease;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .tracker-step:last-child {
@@ -804,12 +995,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            animation: slideIn 0.3s ease;
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes slideIn {
             from {
-                transform: translateX(-10px);
+                transform: translateX(-20px);
                 opacity: 0;
             }
             to {
@@ -842,7 +1033,7 @@
             border-left: 6px solid #ffc107;
         }
 
-        /* Login Form - Hidden Credentials */
+        /* Login Form */
         .login-form {
             max-width: 400px;
             margin: 0 auto;
@@ -863,11 +1054,33 @@
             border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Lazy Loading Container */
+        .lazy-container {
+            position: relative;
+            min-height: 200px;
+        }
+
+        .lazy-container.loading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         /* PDF Download Button */
@@ -889,23 +1102,8 @@
 
         .pdf-download-btn:hover {
             background: #218838;
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.05);
             box-shadow: var(--shadow-md);
-        }
-
-        /* Edit Form Styles */
-        .edit-input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            font-size: 1rem;
-            margin-top: 5px;
-        }
-
-        .edit-input:focus {
-            border-color: var(--primary-color);
-            outline: none;
         }
 
         /* Mobile Specific Styles */
@@ -1036,10 +1234,55 @@
                 box-shadow: none;
             }
         }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
     </style>
-    <!-- Add jsPDF library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Add jsPDF library with lazy loading -->
+    <script>
+        // Lazy load jsPDF
+        const loadPDFLibrary = () => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        };
+
+        // Lazy load html2canvas
+        const loadCanvasLibrary = () => {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        };
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -1080,8 +1323,10 @@
                     </div>
 
                     <!-- Registration Form -->
-                    <div class="modern-form">
-                        <form id="registrationForm">
+                    <div class="modern-form lazy-container" id="registrationFormContainer">
+                        <div class="skeleton-title skeleton" style="display: none;"></div>
+                        <div class="skeleton-text skeleton" style="display: none;"></div>
+                        <form id="registrationForm" style="display: none;">
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Student's Full Name <span>*</span></label>
@@ -1283,7 +1528,9 @@
                                     </thead>
                                     <tbody id="studentsList">
                                         <tr>
-                                            <td colspan="6" style="text-align: center;">Loading...</td>
+                                            <td colspan="6" style="text-align: center;">
+                                                <div class="skeleton-text skeleton" style="width: 100%; height: 40px;"></div>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -1435,9 +1682,13 @@
             measurementId: "G-QTF6FHGEFZ"
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        // Initialize Firebase with lazy loading
+        let db;
+        const initFirebase = () => {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            return db;
+        };
 
         // Global variables
         let isAdminAuthenticated = false;
@@ -1451,6 +1702,12 @@
         const ADMIN_EMAIL = "ethwemaketoppers@gmail.com";
         const ADMIN_PASSWORD = "vidhan kumar";
 
+        // Lazy load Firebase
+        setTimeout(() => {
+            initFirebase();
+            setupRealtimeListener();
+        }, 100);
+
         // Live counter update
         function updateLiveCounter() {
             const counterElement = document.getElementById('totalApplications');
@@ -1459,8 +1716,10 @@
             }
         }
 
-        // Real-time listener for students collection
+        // Real-time listener for students collection with lazy loading
         function setupRealtimeListener() {
+            if (!db) return;
+            
             const studentsRef = collection(db, "students");
             
             onSnapshot(studentsRef, (snapshot) => {
@@ -1507,6 +1766,8 @@
         // Check Registration Status
         async function checkRegistrationStatus() {
             try {
+                if (!db) return false;
+                
                 const settingsDoc = await getDoc(doc(db, "settings", "registration"));
                 const infoCard = document.getElementById('registrationInfoCard');
                 const form = document.getElementById('registrationForm');
@@ -1596,8 +1857,11 @@
             }, 1000);
         }
 
-        // Generate PDF
+        // Generate PDF with lazy loaded libraries
         async function generatePDF(student, studentId, type = 'registration') {
+            await loadPDFLibrary();
+            await loadCanvasLibrary();
+            
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
@@ -1695,7 +1959,7 @@
             return doc;
         }
 
-        // Download PDF
+        // Download PDF with lazy loading
         async function downloadPDF(student, studentId, type = 'registration') {
             try {
                 const doc = await generatePDF(student, studentId, type);
@@ -1707,7 +1971,7 @@
             }
         }
 
-        // Registration Form Submit
+        // Registration Form Submit with lazy loading
         document.getElementById('registrationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -2418,8 +2682,9 @@
         }
 
         // Initial setup
-        checkRegistrationStatus();
-        setupRealtimeListener();
+        setTimeout(() => {
+            checkRegistrationStatus();
+        }, 500);
 
         // Close modal when clicking outside
         window.onclick = function(event) {
@@ -2457,6 +2722,49 @@
                 }
             });
         });
+
+        // Lazy load form content
+        document.addEventListener('DOMContentLoaded', () => {
+            const registrationForm = document.getElementById('registrationForm');
+            const skeletons = document.querySelectorAll('.skeleton');
+            
+            setTimeout(() => {
+                skeletons.forEach(s => s.style.display = 'none');
+                registrationForm.style.display = 'block';
+            }, 500);
+        });
+
+        // Performance optimization - debounce search
+        const debounce = (func, delay) => {
+            let debounceTimer;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => func.apply(context, args), delay);
+            };
+        };
+
+        window.filterStudents = debounce(() => {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = allStudents;
+            
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(s => s.status === statusFilter);
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(s => 
+                    (s.studentName && s.studentName.toLowerCase().includes(searchTerm)) ||
+                    (s.email && s.email.toLowerCase().includes(searchTerm)) ||
+                    (s.phone && s.phone.includes(searchTerm))
+                );
+            }
+            
+            displayStudents(filtered);
+        }, 300);
     </script>
 </body>
 </html>
